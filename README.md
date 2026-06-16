@@ -298,31 +298,6 @@ The `--model` flag sets both the model name in trace spans and the `server.model
 
 Configs expect Prometheus at `http://localhost:9090`. Adjust `metrics.prometheus.scrape_url` if your setup differs. Set `metrics.type: default` to skip Prometheus and use only request-lifecycle metrics.
 
-## Interpreting Results
-
-### Expected Signals
-
-**Scenario 1 — Multi-Turn Agent Loop:**
-- SGLang's radix-tree cache may show lower p95/p99 TTFT on turns 2-6
-- vLLM APC should also perform well when the prefix is stable and block-aligned
-- Meaningful difference: fewer cache-miss cliffs under concurrency
-
-**Scenario 2 — Branch / Fan-Out:**
-- SGLang has an architectural opportunity (workload naturally forms a tree)
-- vLLM should still reuse the exact shared prefix through APC
-- Measure: incremental memory per branch, TTFT for sibling branches
-
-**Scenario 3 — Monorepo Swarm:**
-- Tests whether the engine protects reusable global context under churn
-- **Layout matters**: if Variant A >> Variant B on both engines, prompt canonicalization matters more than engine choice
-- Winning engine: sustains lower p95/p99 TTFT and higher tasks/GPU-hour
-
-### What NOT to Conclude
-
-- Do not score as "SGLang wins because radix tree" — measure whether repeated turns actually avoid prefill recomputation
-- Do not assume vLLM stores the shared prefix N times — measure actual incremental memory
-- Do not ignore prompt layout effects — they may dominate engine differences
-
 ## Token Budget
 
 | Scenario | Traces | Shared Prefix | Per-Session Unique | Turns | Est. Total Input |
