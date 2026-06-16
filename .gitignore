@@ -1,0 +1,21 @@
+# Generated trace files (regenerate with: python -m datagen.generate_all --model YOUR_MODEL)
+traces/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

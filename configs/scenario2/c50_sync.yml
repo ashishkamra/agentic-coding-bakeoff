@@ -1,0 +1,29 @@
+api:
+  type: chat
+server:
+  type: vllm
+  model_name: test-model/TestLLM-70B
+  base_url: http://localhost:8000
+  ignore_eos: true
+metrics:
+  type: prometheus
+  prometheus:
+    scrape_url: http://localhost:9090/api/v1/query_range
+report:
+  request_lifecycle:
+    summary: true
+    per_stage: true
+    per_request: true
+data:
+  type: otel_trace_replay
+  otel_trace_replay:
+    trace_directory: ./traces/scenario2_sync
+    use_static_model: true
+    static_model_name: test-model/TestLLM-70B
+load:
+  type: trace_session_replay
+  stages:
+  - concurrent_sessions: 50
+    num_sessions: 50
+  num_workers: 8
+  worker_max_concurrency: 1000
